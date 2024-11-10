@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Alumni Profiles and Skill Development</title>
+    <style>
+    /* Inline CSS */
+
+    body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+    }
+
+    h1 {
+        text-align: center;
+    }
+
+    .profile {
+        border: 1px solid #ccc;
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .profile h2 {
+        margin-top: 0;
+    }
+
+    .skills, .courses {
+        list-style-type: none;
+        padding: 0;
+    }
+
+    .skills li, .courses li {
+        background-color: #f9f9f9;
+        margin: 5px 0;
+        padding: 5px;
+    }
+
+    .courses li a {
+        text-decoration: none;
+        color: #007BFF;
+    }
+
+    .courses li a:hover {
+        text-decoration: underline;
+    }
+    </style>
+</head>
+<body>
+    <h1>Alumni Profiles and Skill Development</h1>
+    <div id="profiles"></div>
+
+    <script>
+    // Inline JavaScript
+
+    // Sample profiles data (excluding 'Leili')
+    const profiles = [
+        {
+            name: 'Alice',
+            alumniJobs: ['Software Engineer', 'Data Scientist'],
+            skills: [],
+            updatedSkills: [],
+            recommendedCourses: []
+        },
+        {
+            name: 'Bob',
+            alumniJobs: ['Product Manager'],
+            skills: [],
+            updatedSkills: [],
+            recommendedCourses: []
+        },
+        {
+            name: 'Charlie',
+            alumniJobs: ['Software Engineer'],
+            skills: [],
+            updatedSkills: [],
+            recommendedCourses: []
+        },
+        {
+            name: 'Diana',
+            alumniJobs: ['Data Scientist'],
+            skills: [],
+            updatedSkills: [],
+            recommendedCourses: []
+        },
+        {
+            name: 'Eve',
+            alumniJobs: ['Product Manager', 'Software Engineer'],
+            skills: [],
+            updatedSkills: [],
+            recommendedCourses: []
+        }
+        // Add more profiles as needed
+    ];
+
+    // Function to extract skills from jobs
+    function extractSkillsFromJobs(jobs) {
+        const jobSkills = {
+            'Software Engineer': ['Programming', 'Algorithms', 'Data Structures'],
+            'Data Scientist': ['Machine Learning', 'Statistics', 'Data Visualization'],
+            'Product Manager': ['Leadership', 'Strategic Thinking', 'Communication'],
+            // Add more jobs and their associated skills
+        };
+
+        let skills = [];
+        jobs.forEach(job => {
+            if (jobSkills[job]) {
+                skills = skills.concat(jobSkills[job]);
+            }
+        });
+
+        return [...new Set(skills)]; // Remove duplicates
+    }
+
+    // Function to find courses for skills
+    function findCoursesForSkills(skills) {
+        const skillCourses = {
+            'Programming': [
+                { name: 'Intro to Programming', url: 'https://example.com/programming' },
+                { name: 'Advanced Programming Concepts', url: 'https://example.com/advanced-programming' }
+            ],
+            'Algorithms': [
+                { name: 'Algorithms and Data Structures', url: 'https://example.com/algorithms' }
+            ],
+            'Data Structures': [
+                { name: 'Data Structures in Depth', url: 'https://example.com/data-structures' }
+            ],
+            'Machine Learning': [
+                { name: 'Machine Learning Basics', url: 'https://example.com/ml-basics' },
+                { name: 'Deep Learning Specialization', url: 'https://example.com/deep-learning' }
+            ],
+            'Statistics': [
+                { name: 'Statistics 101', url: 'https://example.com/statistics' }
+            ],
+            'Data Visualization': [
+                { name: 'Data Visualization with D3.js', url: 'https://example.com/data-visualization' }
+            ],
+            'Leadership': [
+                { name: 'Effective Leadership Skills', url: 'https://example.com/leadership' }
+            ],
+            'Strategic Thinking': [
+                { name: 'Strategic Thinking for Managers', url: 'https://example.com/strategic-thinking' }
+            ],
+            'Communication': [
+                { name: 'Professional Communication', url: 'https://example.com/communication' }
+            ]
+            // Add more skills and their courses
+        };
+
+        let courses = [];
+        skills.forEach(skill => {
+            if (skillCourses[skill]) {
+                skillCourses[skill].forEach(course => {
+                    courses.push({ ...course, skill: skill });
+                });
+            }
+        });
+
+        return courses;
+    }
+
+    // Function to render profiles
+    function renderProfiles() {
+        const profilesContainer = document.getElementById('profiles');
+
+        profiles.forEach(profile => {
+            // Extract skills
+            profile.skills = extractSkillsFromJobs(profile.alumniJobs);
+            profile.recommendedCourses = findCoursesForSkills(profile.skills);
+
+            const profileDiv = document.createElement('div');
+            profileDiv.className = 'profile';
+
+            const nameHeading = document.createElement('h2');
+            nameHeading.textContent = profile.name;
+            profileDiv.appendChild(nameHeading);
+
+            const jobsPara = document.createElement('p');
+            jobsPara.textContent = `Alumni Jobs: ${profile.alumniJobs.join(', ')}`;
+            profileDiv.appendChild(jobsPara);
+
+            const skillsHeading = document.createElement('h3');
+            skillsHeading.textContent = 'Skills:';
+            profileDiv.appendChild(skillsHeading);
+
+            const skillsList = document.createElement('ul');
+            skillsList.className = 'skills';
+            profile.skills.forEach(skill => {
+                const skillItem = document.createElement('li');
+                skillItem.textContent = skill;
+                skillsList.appendChild(skillItem);
+            });
+            profileDiv.appendChild(skillsList);
+
+            const coursesHeading = document.createElement('h3');
+            coursesHeading.textContent = 'Recommended Courses:';
+            profileDiv.appendChild(coursesHeading);
+
+            const coursesList = document.createElement('ul');
+            coursesList.className = 'courses';
+            profile.recommendedCourses.forEach(course => {
+                const courseItem = document.createElement('li');
+                const courseLink = document.createElement('a');
+                courseLink.href = course.url;
+                courseLink.target = '_blank';
+                courseLink.textContent = `${course.name} (Skill: ${course.skill})`;
+                courseLink.addEventListener('click', () => {
+                    updateProfileSkills(profile.name, course.skill);
+                });
+                courseItem.appendChild(courseLink);
+                coursesList.appendChild(courseItem);
+            });
+            profileDiv.appendChild(coursesList);
+
+            profilesContainer.appendChild(profileDiv);
+        });
+    }
+
+    // Function to update profile skills when a course link is clicked
+    function updateProfileSkills(profileName, skill) {
+        const profile = profiles.find(p => p.name === profileName);
+        if (profile && !profile.updatedSkills.includes(skill)) {
+            profile.updatedSkills.push(skill);
+            // Optionally, update recommendations based on new skills
+            // For simplicity, this demo does not re-render the profiles
+            // You can implement re-rendering logic if desired
+            alert(`Skill "${skill}" added to ${profile.name}'s profile.`);
+        }
+    }
+
+    // Render the profiles on page load
+    document.addEventListener('DOMContentLoaded', renderProfiles);
+    </script>
+</body>
+</html>
